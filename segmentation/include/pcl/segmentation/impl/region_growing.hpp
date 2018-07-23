@@ -622,6 +622,7 @@ pcl::RegionGrowing<PointT, NormalT>::getSegmentFromPoint (int index, pcl::PointI
     }
     // if we have already made the segmentation, then find the segment
     // to which this point belongs
+    int segment_count = 0;
     std::vector <pcl::PointIndices>::iterator i_segment;
     for (i_segment = clusters_.begin (); i_segment != clusters_.end (); i_segment++)
     {
@@ -633,6 +634,9 @@ pcl::RegionGrowing<PointT, NormalT>::getSegmentFromPoint (int index, pcl::PointI
           segment_was_found = true;
           cluster.indices.clear ();
           cluster.indices.reserve (i_segment->indices.size ());
+
+          // add header seq index to know which cluster it is
+          cluster.header.seq = segment_count;
           std::copy (i_segment->indices.begin (), i_segment->indices.end (), std::back_inserter (cluster.indices));
           break;
         }
@@ -641,6 +645,7 @@ pcl::RegionGrowing<PointT, NormalT>::getSegmentFromPoint (int index, pcl::PointI
       {
         break;
       }
+      segment_count ++;
     }// next segment
   }// end if point was found
 
